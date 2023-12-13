@@ -82,7 +82,7 @@ struct FastFDTD {
     
     py::array_t<double> run(int timesteps) {
 
-        int blockSize = 512;
+        int blockSize = 512; //128-1024
         int numBlocks = (E.Hx.length + blockSize - 1) / blockSize;
 
         E.CopyToDevice();

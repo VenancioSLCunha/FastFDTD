@@ -4,7 +4,6 @@
 
 namespace py = pybind11;
 
-// Binding for the FDTD class
 void bind_FDTD(py::module &m) {
     py::class_<FastFDTD>(m, "FastFDTD")
         .def(py::init<>())
