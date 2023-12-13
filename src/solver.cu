@@ -15,20 +15,17 @@ struct FastFDTD {
 
     Params params;
 
-    //element_matriz arr2;
-
     FastFDTD() {}
 
-    // Setters for parameters
-    void setGridSize(int s_0, int s_1, 
+    // Setters
+    void setGridSize(int i, int j, 
       double*Ex,double*Ey,double*Ez,
       double*Hx,double*Hy,double*Hz,
       double*Jx,double*Jy,double*Jz) {
 
-        make_elemento(E,Ex,Ey,Ez,s_0,s_1);
-        make_elemento(H,Hx,Hy,Hz,s_0,s_1);
-        make_elemento(J,Jx,Jy,Jz,s_0,s_1);
-        //arr2.make_elemento(s_0, s_1);
+        make_elemento(E,Ex,Ey,Ez,i,j);
+        make_elemento(H,Hx,Hy,Hz,i,j);
+        make_elemento(J,Jx,Jy,Jz,i,j);
     }
 
     void setSimulationParameters(double dx, double dt) {
