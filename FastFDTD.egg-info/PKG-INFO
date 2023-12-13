@@ -1,0 +1,13 @@
+Metadata-Version: 2.1
+Name: FastFDTD
+Version: 0.0.1
+Summary: FDTD em Python utilizando CUDA com o Pybind11
+Author: Venâncio Santos Laureano da Cunha
+Author-email: venancio.slc@hotmail.com
+Requires-Python: >=3.7
+License-File: LICENSE
+Provides-Extra: test
+Requires-Dist: pytest>=6.0; extra == "test"
+
+# FastFDTD
+FDTD utilizando CUDA e PyBind11

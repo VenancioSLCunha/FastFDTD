@@ -1,0 +1,9 @@
+LICENSE
+README.md
+setup.py
+FastFDTD.egg-info/PKG-INFO
+FastFDTD.egg-info/SOURCES.txt
+FastFDTD.egg-info/dependency_links.txt
+FastFDTD.egg-info/not-zip-safe
+FastFDTD.egg-info/requires.txt
+FastFDTD.egg-info/top_level.txt
