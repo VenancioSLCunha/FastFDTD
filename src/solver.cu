@@ -15,17 +15,17 @@ struct FastFDTD {
 
     Params params;
 
+    py::array_t<double> result_ptr;
+
     FastFDTD() {}
 
     // Setters
     void setGridSize(int i, int j, 
       double*Ex,double*Ey,double*Ez,
-      double*Hx,double*Hy,double*Hz,
-      double*Jx,double*Jy,double*Jz) {
+      double*Hx,double*Hy,double*Hz,) {
 
         make_elemento(E,Ex,Ey,Ez,i,j);
         make_elemento(H,Hx,Hy,Hz,i,j);
-        make_elemento(J,Jx,Jy,Jz,i,j);
     }
 
     void setSimulationParameters(double dx, double dt) {
@@ -35,8 +35,7 @@ struct FastFDTD {
         double eps0 = 8.85e-12;
 
         params.Hc = (1 / mu0) * (dt / dx);
-        params.Ec = (1 / eps0) * (dt / dx);
-        params.Jc = (1 / eps0) * dt;
+        params.Ec = (1 / eps0) * dt;
         params.t = 0; 
     }
 
@@ -46,8 +45,7 @@ struct FastFDTD {
         double eps0 = 8.85e-12;
 
         params.Hc = (1 / mu0) * (dt / dx);
-        params.Ec = (1 / eps0) * (dt / dx);
-        params.Jc = (1 / eps0) * dt;
+        params.Ec = (1 / eps0) * dt;
         params.omega = omega;
         params.tau = tau;
         params.t = 0;
@@ -83,15 +81,14 @@ struct FastFDTD {
         int numBlocks = (E.Hx.length + blockSize - 1) / blockSize;
 
         E.CopyToDevice();
-        H.CopyToDevice();
-        J.CopyToDevice();
+        H.CopyToDevice();  
 
         for (int i = 0; i < timesteps; i++) {
 
             auto start = high_resolution_clock::now();
 
-            timestepE<<<numBlocks, blockSize>>>(E, H, J, params);
-            timestepH<<<numBlocks, blockSize>>>(E, H, J, params);
+            timestepE<<<numBlocks, blockSize>>>(E, H, params);
+            timestepH<<<numBlocks, blockSize>>>(E, H, params);
 
             params.t += params.dt;
 
@@ -102,14 +99,14 @@ struct FastFDTD {
 
         E.CopyToHost();
         H.CopyToHost();
-        J.CopyToHost();
 
-        result_ptr = py::array_t<double>(E.Hx.length);
-        auto result_data = result_ptr.mutable_data();
-        
-        for (int i = 0; i < E.Hx.length; i++) {
-            result_data[i] = E.Hx.h_data[i];
+        for (int i = 0; i < E.Hx.size_0; i++) {
+            for (int j = 0; j < E.Hx.size_1; j++) {
+                result_data[i * E.Hx.size_1 + j] = E.Hx.h_data[i * E.Hx.size_1 + j];
+            }
         }
+
+        return result_ptr;
     }
 
     py::array_t<double> getResult() const {
@@ -118,6 +115,5 @@ struct FastFDTD {
     ~ FastFDTD() {
         destruct(E);
         destruct(H);
-        destruct(J);
     }
 };

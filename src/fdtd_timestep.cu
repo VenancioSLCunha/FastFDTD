@@ -4,7 +4,7 @@
 #include "solver_func.h"
 
 __global__
-void timestepE(const Tensor E, const Tensor H, const Tensor J, const Params params) {
+void timestepE(const Tensor E, const Tensor H, const Params params) {
     int index = blockIdx.x * blockDim.x + threadIdx.x;
     int stride = blockDim.x * gridDim.x;
 
@@ -43,22 +43,22 @@ void timestepE(const Tensor E, const Tensor H, const Tensor J, const Params para
 
             // Update da fonte
             value = Get(E.Hx, params.source_i, params.source_j);
-            value -= Jc * Get(J.Hx, params.source_i, params.source_j) * exp(-params.t / params.tau) * cos(params.omega * params.t);
+            value -= Jc * Get(H.Hx, params.source_i, params.source_j) * exp(-params.t / params.tau) * cos(params.omega * params.t);
             Set(E.Hx, params.source_i, params.source_j, value);
 
             value = Get(E.Ey, params.source_i, params.source_j);
-            value -= Jc * Get(J.Ey, params.source_i, params.source_j) * exp(-params.t / params.tau) * cos(params.omega * params.t);
+            value -= Jc * Get(H.Ey, params.source_i, params.source_j) * exp(-params.t / params.tau) * cos(params.omega * params.t);
             Set(E.Ey, params.source_i, params.source_j, value);
 
             value = Get(E.Hz, params.source_i, params.source_j);
-            value -= Jc * Get(J.Hz, params.source_i, params.source_j) * exp(-params.t / params.tau) * cos(params.omega * params.t);
+            value -= Jc * Get(H.Hz, params.source_i, params.source_j) * exp(-params.t / params.tau) * cos(params.omega * params.t);
             Set(E.Hz, params.source_i, params.source_j, value);
         }
     }
 }
 
 __global__
-void timestepH(const Tensor E, Tensor H, const Tensor J, const Params params) {
+void timestepH(const Tensor E, Tensor H, const Params params) {
     int index = blockIdx.Hx * blockDim.Hx + threadIdx.Hx;
     int stride = blockDim.Hx * gridDim.Hx;
 

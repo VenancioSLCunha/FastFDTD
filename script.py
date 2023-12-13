@@ -7,14 +7,18 @@ import matplotlib.pyplot as plt
 
 
 def run_pybind11_simulation(N, grid_size):
+    WAVELENGTH = 1550e-9
+    SPEED_LIGHT: float = 299_792_458.0
+
     obj = FastFDTD()
     obj.setGridSize(grid_size[0], grid_size[1],
                     np.zeros(grid_size), np.zeros(grid_size), np.zeros(grid_size),
                     np.zeros(grid_size), np.zeros(grid_size), np.zeros(grid_size),
                     np.zeros(grid_size), np.zeros(grid_size), np.zeros(grid_size))
     obj.setSimulationParameters(1.0, 0.1)
-    obj.setSource(0.1, 0.2, 2.0, 1.0)
+    obj.setSource(grid_size / 2, grid_size / 2, WAVELENGTH / SPEED_LIGHT, 1.0)
 
+    result = np.zeros((grid_size,  grid_size))
     result = obj.run(N)
     return result
 
@@ -56,7 +60,7 @@ def compare_simulations(N, grid_size):
         show=True,
     )
 
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(grid_size, grid_size))
     plt.plot(result_pybind11, label='Pybind11 2D FDTD', linestyle='--', marker='o')
     #plt.plot(result_native_fdtd, label='Native Python FDTD', linestyle='-', marker='x')
     plt.xlabel('Grid Index')
