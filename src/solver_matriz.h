@@ -2,8 +2,8 @@ import "solver_func.h"
 
 struct element_matriz {
 
-    int size_0;
-    int size_1;
+    int tam_0;
+    int tam_1;
 
     int length;
     
@@ -18,6 +18,11 @@ struct element_matriz {
         cudaMemcpy(d_data, h_data, length * sizeof(double), cudaMemcpyHostToDevice);
     }
 };
+
+struct element_object {
+
+
+}
 
 struct Tensor {
 
@@ -40,25 +45,25 @@ struct Tensor {
 };
 
 __device__
-void converte_index(const element_matriz &arr, const int raveled_index, int &i,int &j) {
+void converte_index(const element_matriz &array, const int raveled_index, int &i,int &j) {
   
-    i= raveled_index / arr.size_1;
-    j= raveled_index % arr.size_1;
+    i= raveled_index / array.tam_1;
+    j= raveled_index % array.tam_1;
 }
 
-void make_elemento(element_matriz &arr, double* data, int size_0, int size_1) {
-  arr.size_0=size_0;
-  arr.size_1=size_1;
-  arr.length=size_0*size_1;
+void make_elemento(element_matriz &array, double* data, int tam_0, int tam_1) {
+  array.tam_0=tam_0;
+  array.tam_1=tam_1;
+  array.length=tam_0*tam_1;
   
-  cudaMalloc(&arr.d_data,arr.length*sizeof(double));
+  cudaMalloc(&array.d_data,array.length*sizeof(double));
   
-  arr.h_data = data;
+  array.h_data = data;
 }
 
-void make_elemento(Tensor& tensor, double*xdata,double*ydata,double*zdata,int size_0,int size_1) {
+void make_elemento(Tensor& tensor, double*xdata,double*ydata,double*zdata,int tam_0,int tam_1) {
 
-  make_elemento(tensor.Hx, xdata, size_0, size_1);
-  make_elemento(tensor.Ey, ydata, size_0, size_1);
-  make_elemento(tensor.Hz, zdata, size_0, size_1);
+  make_elemento(tensor.Hx, xdata, tam_0, tam_1);
+  make_elemento(tensor.Ey, ydata, tam_0, tam_1);
+  make_elemento(tensor.Hz, zdata, tam_0, tam_1);
 }

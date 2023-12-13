@@ -19,7 +19,7 @@ def run_pybind11_simulation(N, grid_size):
     return result
 
 
-def run_native_fdtd_simulation(N, grid_size):
+def build_native_fdtd_simulation(N, grid_size):
     fdtd.set_backend("numpy")
 
     WAVELENGTH = 1550e-9
@@ -36,18 +36,29 @@ def run_native_fdtd_simulation(N, grid_size):
         period=WAVELENGTH / SPEED_LIGHT, name="pointsource",
     )
     
-    result = grid.run(N, progress_bar=False)
-
-    return result
+    return grid
 
 def compare_simulations(N, grid_size):
     result_pybind11 = run_pybind11_simulation(N, grid_size)
-    result_native_fdtd = run_native_fdtd_simulation(N, grid_size)
+    native_fdtd = build_native_fdtd_simulation(N, grid_size)
 
+    native_fdtd.visualize(
+        native_fdtd,
+        x=None,
+        y=None,
+        z=None,
+        cmap="Blues",
+        pbcolor="C3",
+        pmlcolor=(0, 0, 0, 0.1),
+        objcolor=(1, 0, 0, 0.1),
+        srccolor="C0",
+        detcolor="C2",
+        show=True,
+    )
 
     plt.figure(figsize=(10, 6))
     plt.plot(result_pybind11, label='Pybind11 2D FDTD', linestyle='--', marker='o')
-    plt.plot(result_native_fdtd, label='Native Python FDTD', linestyle='-', marker='x')
+    #plt.plot(result_native_fdtd, label='Native Python FDTD', linestyle='-', marker='x')
     plt.xlabel('Grid Index')
     plt.ylabel('Electric Field Value')
     plt.title('Comparison of Pybind11 and Native Python 2D FDTD')

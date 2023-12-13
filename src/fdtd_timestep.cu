@@ -8,11 +8,11 @@ void timestepE(const Tensor E, const Tensor H, const Tensor J, const Params para
     int index = blockIdx.x * blockDim.x + threadIdx.x;
     int stride = blockDim.x * gridDim.x;
 
-    for (int thread_i = index; thread_i < E.Hx.length * E.Hx.size_1; thread_i += stride) {
+    for (int thread_i = index; thread_i < E.Hx.length * E.Hx.tam_1; thread_i += stride) {
         int i, j;
         converte_index(E.Hx, thread_i, i, j);
 
-        if (i > 0 && j > 0 && i < E.Hx.size_0 - 1 && j < E.Hx.size_1 - 1) {
+        if (i > 0 && j > 0 && i < E.Hx.tam_0 - 1 && j < E.Hx.tam_1 - 1) {
             double Ec = params.Ec; 
             double Jc = params.Jc; 
 
@@ -62,11 +62,11 @@ void timestepH(const Tensor E, Tensor H, const Tensor J, const Params params) {
     int index = blockIdx.Hx * blockDim.Hx + threadIdx.Hx;
     int stride = blockDim.Hx * gridDim.Hx;
 
-    for (int thread_i = index; thread_i < E.Hx.length * E.Hx.size_1; thread_i += stride) {
+    for (int thread_i = index; thread_i < E.Hx.length * E.Hx.tam_1; thread_i += stride) {
         int i, j;
         converte_index(E.Hx, thread_i, i, j);
 
-        if (i > 0 && j > 0 && i < E.Hx.size_0 - 1 && j < E.Hx.size_1 - 1) {
+        if (i > 0 && j > 0 && i < E.Hx.tam_0 - 1 && j < E.Hx.tam_1 - 1) {
             double Hc = params.Hc;
             double value;
 
